@@ -5,8 +5,8 @@ const auth = require('../../middlewares/auth');
 
 router.post('/login', userController.login);
 
-router.post('/add', auth.verificarAdministrador, userController.add);
-router.get('/list', auth.verificarAdministrador, userController.list);
-router.put('/update', auth.verificarAdministrador, userController.update);
+router.post('/add', userController.add);
+router.get('/list', userController.list);
+router.put('/update', userController.update);
 
 module.exports = router;
