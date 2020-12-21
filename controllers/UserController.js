@@ -7,7 +7,7 @@ exports.login = async (req, res, next) => {
     try {
         const user = await models.Usuario.findOne({ where: { email: req.body.email } });
         if (user) {
-            const passwordIsValid = bcrypt.compareSync(req.body.password, Usuario.password);
+            const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
             if (passwordIsValid) {
                 const token = await tokenServices.encode(user);
                 res.status(200).send({
