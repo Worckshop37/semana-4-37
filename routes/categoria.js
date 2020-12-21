@@ -1,6 +1,9 @@
+//import routerx from 'express-promise-router';
 const router = require('express').Router();
-const categoriaController = require('../../controllers/CategoriaController');
-const auth = require('../../middlewares/auth');
+const categoriaController = require('../controllers/CategoriaController');
+const auth = require('../middlewares/auth');
+
+//const router = routerx();
 
 router.get('/list', categoriaController.list);
 router.post('/add', categoriaController.add);

@@ -1,87 +1,55 @@
 const models = require('../models');
+const Categoria = require('../models').Categoria;
 
-exports.list = async (req, res, next) => {
-    try {
-        const articulo = await models.Articulo.findAll();
-        if (articulo) {
-            res.status(200).json(articulo);
-        } else {
-            res.status(404).send({
-                message: 'No hay categorias existentes.'
-            })
+module.exports = {
+    list: async(req, res, next) => {
+        try {
+            const lista = await models.Articulo.findAll({ include: [{ model: Categoria, as: 'categoria' }], });
+            res.status(200).json(lista);
+        } catch (error) {
+            res.status(500).send({ message: 'No se pudo establecer la conexion, intente mas tarde' });
+            next(error);
         }
-    } catch (error) {
-        res.status(500).send({
-            message: 'Error->'
-        })
-        next(error);
-    }
-};
+    },
 
-exports.add = async (req, res, next) => {
-    try {
-        const articuloExistente = await models.Articulo.finOne({where: {codigo: req.body.codigo}});
-        if(!articuloExistente){
+    add: async(req, res, next) => {
+        try {
             const nuevoArticulo = await models.Articulo.create(req.body);
             res.status(200).json(nuevoArticulo);
-        }else{
-            res.status(406).send({
-                message: 'Articulo existente.'
-            });
+        } catch (error) {
+            res.status(500).send({ message: 'No se pudo establecer la conexion, intente mas tarde' });
+            next(error);
         }
-    } catch (error) {
-        res.status(500).send({
-            message: 'Error->'
-        })
-        next(error);
-    }
-};
+    },
 
-exports.update = async (req, res, next) => {
-    try {
-        const articulo = await models.Articulo.update({ 
-            nombre: req.body.nombre,
-            descripcion: req.body.descripcion,
-            codigo: req.body.codigo
-        },
-            {
-                where: {
-                    id: req.body.id
-                },
-            });
-        res.status(200).json(articulo);
-    } catch (error) {
-        res.status(500).send({
-            message: 'Error.'
-        });
-        next(error);
-    }
-};
+    update: async(req, res, next) => {
+        try {
+            console.log(req.body);
+            const articuloUpdate = await models.Articulo.update({ categoriaId: req.body.categoria, codigo: req.body.codigo, nombre: req.body.nombre, descripcion: req.body.descripcion }, { where: { id: req.body.id } });
+            res.status(200).json(articuloUpdate);
+        } catch (error) {
+            res.status(500).send({ message: 'No se pudo establecer la conexion, intente mas tarde' });
+            next(error);
+        }
+    },
 
-exports.activate = async (req, res, next) => {
-    try {
-        const articulo = await models.Articulo.update({estado: 1}, {
-            where: { id: req.body.id},
-        });
-        res.status(200).send({ message: 'El articulo ha sido activado.'});
-    } catch (error) {
-        res.status(500).send({
-            message: 'Error.'
-        });
-        next(error);
-    }
-};
+    activate: async(req, res, next) => {
+        try {
+            const articuloActivate = await models.Articulo.update({ estado: 1 }, { where: { id: req.body.id} });
+            res.status(200).json(articuloActivate);
+        } catch (error) {
+            res.status(500).send({ message: 'No se pudo establecer la conexion, intente mas tarde' });
+            next(error);
+        }
+    },
 
-exports.deactivate = async (req, res, next) => {
-    try {
-        const articulo = await models.Articulo.update({estado: 0}, {
-            where: { id: req.body.id},
-        });
-        res.status(200).send({ message: 'El articulo ha sido desactivado.'});
-    } catch (error) {
-        res.status(500).send({
-            message: 'Error.'
-        });
-        next(error);
-    }
-};
+    deactivate: async(req, res, next) => {
+        try {
+            const articuloDeactivate = await models.Articulo.update({ estado: 0 }, { where: { id: req.body.id } });
+            res.status(200).json(articuloDeactivate);
+        } catch (error) {
+            res.status(500).send({ message: 'No se pudo establecer la conexion, intente mas tarde' });
+            next(error);
+        }
+    },
+}
